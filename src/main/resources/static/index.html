@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>植物大战僵尸：浏览器演示版</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg: #0b1220;
+            --panel: #11192c;
+            --accent: #8fd14f;
+            --text: #e6f2ff;
+            --muted: #99aac2;
+            --danger: #e85b81;
+        }
+        body {
+            margin: 0;
+            font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+            background: radial-gradient(circle at 20% 20%, rgba(143, 209, 79, 0.12), transparent 30%),
+                        radial-gradient(circle at 80% 0%, rgba(232, 91, 129, 0.15), transparent 30%),
+                        var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        header {
+            padding: 32px 5vw 20px;
+            text-align: center;
+        }
+        h1 {
+            margin: 0 0 8px;
+            font-size: 32px;
+            letter-spacing: 0.02em;
+        }
+        p.subtitle {
+            margin: 0;
+            color: var(--muted);
+        }
+        main {
+            padding: 0 5vw 64px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 16px;
+        }
+        section {
+            background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+            border: 1px solid rgba(255,255,255,0.07);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+            border-radius: 16px;
+            padding: 18px 18px 20px;
+            backdrop-filter: blur(10px);
+        }
+        h2 {
+            margin: 0 0 12px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.15s ease, background 0.15s ease, border 0.15s ease;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(255,255,255,0.2);
+        }
+        .btn.primary {
+            background: linear-gradient(135deg, #9be15d, #00e3ae);
+            color: #0a111f;
+            border: none;
+        }
+        .btn.danger {
+            background: linear-gradient(135deg, #ff8fb1, #ff5c8d);
+            color: #0a111f;
+            border: none;
+        }
+        .input-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .input-row input, select {
+            flex: 1;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.06);
+            color: var(--text);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .card {
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 10px;
+            background: rgba(0,0,0,0.22);
+        }
+        .card h3 {
+            margin: 0 0 6px;
+            font-size: 16px;
+        }
+        .label {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+            color: var(--muted);
+            font-size: 12px;
+            margin-right: 6px;
+        }
+        .notes {
+            list-style: disc;
+            padding-left: 18px;
+            margin: 8px 0 0;
+            color: var(--muted);
+        }
+        .highlight {
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .log {
+            background: #0a111f;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 12px;
+            height: 260px;
+            overflow: auto;
+            font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            color: var(--muted);
+        }
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.05);
+            margin: 4px 4px 0 0;
+            font-size: 12px;
+        }
+        .small {
+            font-size: 12px;
+            color: var(--muted);
+        }
+        .flex {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>植物大战僵尸 · 浏览器演示版</h1>
+    <p class="subtitle">无需外部工具，直接在浏览器里体验主线、小游戏和无尽模式。</p>
+</header>
+
+<main>
+    <section id="session-panel">
+        <h2>🎮 快速开局</h2>
+        <div class="flex">
+            <button class="btn primary" onclick="startMainline()">主线冒险</button>
+            <button class="btn" onclick="startEndless()">无尽模式</button>
+        </div>
+        <div class="input-row">
+            <select id="mini-game-name"></select>
+            <button class="btn" onclick="startMiniGame()">开启小游戏</button>
+        </div>
+        <p class="small">新建存档后，界面会显示 Session ID 和当前进度，可随时继续推进。</p>
+        <div id="session-info" class="card" style="margin-top:10px; display:none;"></div>
+    </section>
+
+    <section>
+        <h2>🏃 推进主线</h2>
+        <div class="input-row">
+            <input id="session-id-input" type="text" placeholder="输入主线 Session ID">
+            <button class="btn" onclick="progressMainline()">推进关卡</button>
+        </div>
+        <p class="small">只能推进主线模式。当达到第 10 关后存档会被标记为完成。</p>
+        <div id="progress-status" class="card" style="margin-top:10px; display:none;"></div>
+    </section>
+
+    <section>
+        <h2>📖 植物图鉴</h2>
+        <div id="plants" class="grid"></div>
+    </section>
+
+    <section>
+        <h2>🧟 关卡预览</h2>
+        <div id="levels" class="grid"></div>
+    </section>
+
+    <section>
+        <h2>🗂️ 小游戏清单</h2>
+        <div id="mini-games" class="flex"></div>
+    </section>
+
+    <section>
+        <h2>🧭 实时日志</h2>
+        <div id="log" class="log"></div>
+    </section>
+</main>
+
+<script>
+    const logBox = document.getElementById('log');
+    const sessionInfo = document.getElementById('session-info');
+    const progressBox = document.getElementById('progress-status');
+
+    function log(message) {
+        const time = new Date().toLocaleTimeString();
+        logBox.textContent = `[${time}] ${message}\n` + logBox.textContent;
+    }
+
+    function renderSession(session) {
+        sessionInfo.style.display = 'block';
+        sessionInfo.innerHTML = `
+            <h3>Session ID: <span class="highlight">${session.id}</span></h3>
+            <p class="small">模式：${session.mode} ｜ 当前关卡：<span class="highlight">${session.currentLevel}</span> ｜ 状态：${session.completed ? '已完成' : '进行中'}</p>
+            <div>
+                ${session.notes.map(n => `<span class="pill">📝 ${n}</span>`).join('')}
+            </div>
+        `;
+        document.getElementById('session-id-input').value = session.id;
+    }
+
+    function renderProgress(session) {
+        progressBox.style.display = 'block';
+        progressBox.innerHTML = `
+            <h3>当前关卡：<span class="highlight">${session.currentLevel}</span></h3>
+            <p class="small">完成状态：${session.completed ? '✅ 通关' : '战斗中'}</p>
+            <ul class="notes">${session.notes.map(n => `<li>${n}</li>`).join('')}</ul>
+        `;
+    }
+
+    async function startMainline() {
+        const res = await fetch('/api/game/mainline/start', { method: 'POST' });
+        const data = await res.json();
+        renderSession(data);
+        log(`创建主线存档（ID: ${data.id}），起始关卡 ${data.currentLevel}`);
+    }
+
+    async function startEndless() {
+        const res = await fetch('/api/game/endless/start', { method: 'POST' });
+        const data = await res.json();
+        renderSession(data);
+        log(`开启无尽模式（ID: ${data.id}），从第 ${data.currentLevel} 波开始`);
+    }
+
+    async function startMiniGame() {
+        const select = document.getElementById('mini-game-name');
+        const name = select.value;
+        const res = await fetch('/api/game/minigame/start', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        });
+        const data = await res.json();
+        renderSession(data);
+        log(`开启小游戏「${name}」（ID: ${data.id}）`);
+    }
+
+    async function progressMainline() {
+        const sessionId = document.getElementById('session-id-input').value.trim();
+        if (!sessionId) {
+            alert('请先输入主线 Session ID');
+            return;
+        }
+        const res = await fetch(`/api/game/mainline/${sessionId}/progress`, { method: 'POST' });
+        if (!res.ok) {
+            alert('推进失败：请确认 Session ID 正确且属于主线模式');
+            return;
+        }
+        const data = await res.json();
+        renderProgress(data);
+        renderSession(data);
+        log(`存档 ${data.id} 推进到第 ${data.currentLevel} 关`);
+    }
+
+    async function loadCatalog() {
+        const [plantsRes, levelsRes, miniRes] = await Promise.all([
+            fetch('/api/game/plants'),
+            fetch('/api/game/levels'),
+            fetch('/api/game/minigames')
+        ]);
+        const [plants, levels, miniGames] = await Promise.all([
+            plantsRes.json(),
+            levelsRes.json(),
+            miniRes.json()
+        ]);
+        renderPlants(plants);
+        renderLevels(levels);
+        renderMiniGames(miniGames);
+    }
+
+    function renderPlants(plants) {
+        const container = document.getElementById('plants');
+        container.innerHTML = plants.map(p => `
+            <div class="card">
+                <h3>${p.type}</h3>
+                <div><span class="label">费用</span> ${p.cost} 太阳</div>
+                <div><span class="label">伤害</span> ${p.damage}</div>
+                <div><span class="label">冷却</span> ${p.cooldownSeconds}s</div>
+            </div>
+        `).join('');
+    }
+
+    function renderLevels(levels) {
+        const container = document.getElementById('levels');
+        container.innerHTML = levels.map(l => `
+            <div class="card">
+                <h3>第 ${l.number} 关 · ${l.theme}</h3>
+                <div class="small">波次：${l.zombies.length} 组</div>
+                <ul class="notes">
+                    ${l.zombies.map(z => `<li>${z.type} ｜ HP ${z.health} ｜ 速度 ${z.speed} ｜ 奖励 ${z.rewardSun}</li>`).join('')}
+                </ul>
+            </div>
+        `).join('');
+    }
+
+    function renderMiniGames(list) {
+        const container = document.getElementById('mini-games');
+        container.innerHTML = list.map(name => `<span class="pill">🎲 ${name}</span>`).join('');
+        const select = document.getElementById('mini-game-name');
+        select.innerHTML = list.map(name => `<option value="${name}">${name}</option>`).join('');
+    }
+
+    loadCatalog().then(() => log('内容预载完成，可以开始游戏啦 🎉'));
+</script>
+</body>
+</html>
